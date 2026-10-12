@@ -1,18 +1,18 @@
-# Shopping List — Flutter
+# Shopping List
 
-**Mobile Programming · Week 2 · Session 3**
+My first Flutter app: add items, mark them as bought, and delete them.
 
-My first Flutter app. Type an item, tap **Add**, and it appears in the list. Tap an
-item when you have bought it and it gets crossed out, tap the bin to delete it, and
-use the button in the top bar to clear everything you have already bought.
+## Screenshots
 
-Built step by step in `lib/main.dart`, running on Chrome (web) with Flutter 3.47.7.
+![My list](screenshots/list.png)
 
----
+![An item bought](screenshots/bought.png)
+
+![An empty item refused](screenshots/empty.png)
 
 ## What it does
 
-- Starts with **Milk, Bread, Rice** and a title showing how many items are left.
+- Starts with **Milk, Bread, Rice**, and the title shows how many items are left.
 - Typing an item and pressing **Add** (or **Enter**) puts it at the end of the list
   and empties the field.
 - An empty field is refused with the message **"Type an item first"**.
@@ -21,10 +21,8 @@ Built step by step in `lib/main.dart`, running on Chrome (web) with Flutter 3.47
 - Each row has a bin that deletes **only that row**, and says so afterwards.
 - Tapping a row marks it as bought: the name is crossed out, the basket icon becomes
   a tick, and the count in the title goes down. Tapping again undoes it.
-- The 🧹 button in the top bar removes every bought item at once.
+- The button in the top bar removes every bought item at once.
 - When the list is empty the page shows **"Your list is empty"**.
-
----
 
 ## How to run it
 
@@ -44,7 +42,7 @@ dart run warmup.dart
 
 ---
 
-## Step by step
+## How it was built
 
 ### Warm-up — classes, named parameters, functions as values
 
@@ -65,8 +63,7 @@ underlines and a DEBUG ribbon — the text has no page under it to give it a sty
 ### Step 2 — A real page
 
 A `Scaffold` gives the app a proper page: an `AppBar` at the top and a `body`
-underneath. I gave the bar `backgroundColor: Colors.amber` and made the text bigger
-with `style: TextStyle(fontSize: 24)`.
+underneath.
 
 ![A real page](screenshots/04-real-page.png)
 
@@ -74,24 +71,22 @@ with `style: TextStyle(fontSize: 24)`.
 
 The screen moved into my own classes, `ShoppingApp` and `HomeScreen`, both extending
 `StatelessWidget`. `ThemeData(colorSchemeSeed: Colors.teal)` colours the whole app
-from one seed colour, and `debugShowCheckedModeBanner: false` hides the DEBUG ribbon.
+from one seed colour.
 
 ![My own widgets](screenshots/05-own-widgets.png)
 
 ### Step 4 — Show a list
 
 `ListView.builder` with `itemCount` and `itemBuilder`. Flutter calls `itemBuilder`
-once per row with that row's `index`, and each row is a `ListTile` with a basket icon
-and the item's name. The second line uses `index + 1` so the rows read "Item 1, Item
-2…" rather than starting at zero.
+once per row with that row's `index`, and each row is a `ListTile`.
 
 ![Show a list](screenshots/06-list.png)
 
 ### Step 5 — Make it react
 
 `HomeScreen` became a `StatefulWidget` split in two: the widget holds what never
-changes (`title`), and `_HomeScreenState` holds what does (`items`). The `+` button
-calls `setState`, which tells Flutter to run `build` again so the new row appears.
+changes (`title`), and `_HomeScreenState` holds what does (`items`). `setState` tells
+Flutter to run `build` again so the new row appears.
 
 `items` lives outside `build` — inside it, the list would be created fresh on every
 redraw and anything I added would be lost.
@@ -100,27 +95,19 @@ redraw and anything I added would be lost.
 
 ### Step 6 — Type my own items
 
-A `TextField` and an **Add** button sit above the list in a `Row` inside a `Column`.
-A `TextEditingController` holds what is typed; `controller.text` reads it and
-`controller.clear()` empties it after a successful add.
+A `TextField` and an **Add** button sit above the list. A `TextEditingController`
+holds what is typed; `controller.text` reads it and `controller.clear()` empties it.
 
 Two `Expanded` widgets, for two different reasons: around the `TextField` so it does
 not ask for infinite width inside the `Row`, and around the `ListView` so it does not
 ask for infinite height inside the `Column`.
 
-![Typing an item](screenshots/08-typed-item.png)
-
-Tapping **Add** on an empty field adds nothing and shows a `SnackBar` instead. The
-rule checks first and `return`s early, so nothing reaches the list.
-
-![Empty field refused](screenshots/09-empty-warning.png)
-
 ### Step 7 — Delete an item
 
 Every row gets its own `IconButton` in the `ListTile`'s `trailing` slot, and each
 one's `onPressed` closure remembers that row's `index` — so the bin next to Bread
-deletes Bread and nothing else. The item's name is read **before** `removeAt`, since
-after the removal that index points somewhere else.
+deletes Bread and nothing else. The name is read **before** `removeAt`, since after
+the removal that index points somewhere else.
 
 ![Deleting an item](screenshots/11-delete.png)
 
@@ -138,14 +125,11 @@ class Item {
 ```
 
 `name` is `final` because an item's name never changes; `bought` is a plain `bool`
-because it flips on every tap. Tapping a row toggles it, `itemsLeft` counts the
-items that are not bought, and the top-bar button calls `removeWhere` to drop every
-bought item in one pass.
+because it flips on every tap. `itemsLeft` counts the items that are not bought, and
+the top-bar button calls `removeWhere` to drop every bought item in one pass.
 
 Changing the stored data from `List<String>` to `List<Item>` needs a **hot restart**,
 not a hot reload — a reload keeps the old data, which no longer matches the new code.
-
-![Marked as bought](screenshots/12-bought.png)
 
 ---
 
