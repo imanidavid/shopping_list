@@ -2,6 +2,7 @@
 
 My first Flutter app: add items, mark them as bought, and delete them.
 
+
 ## Screenshots
 
 ![My list](screenshots/list.png)
